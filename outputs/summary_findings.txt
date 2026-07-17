@@ -1,0 +1,14 @@
+QUANTUM SENSOR ML PIPELINE - SUMMARY OF FINDINGS
+=======================================================
+Total windows: 2620
+Places: 3  |  Sessions: 12  |  Source files: 262
+
+Classification (grouped, leakage-safe CV):
+  Random Forest: Acc=0.013 +/- 0.012, Macro-F1=0.009
+  XGBoost: Acc=0.009 +/- 0.006, Macro-F1=0.006
+  SVM (RBF): Acc=0.009 +/- 0.010, Macro-F1=0.007
+
+Regression (file-grouped split):
+  MAE=1.051, RMSE=1.286, R2=0.080
+
+Note: sanity-check (random-split) numbers printed by scripts 02 and 05 are expected to look better than the grouped numbers above - that gap is the leakage effect, not a real capability difference. Report the grouped numbers.
