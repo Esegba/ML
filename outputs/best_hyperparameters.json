@@ -1,0 +1,43 @@
+{
+  "Random Forest": {
+    "params": {
+      "n_estimators": 200,
+      "max_depth": null,
+      "min_samples_leaf": 3
+    },
+    "cv_result": {
+      "Model": "Random Forest",
+      "Params": "{\"n_estimators\": 200, \"max_depth\": null, \"min_samples_leaf\": 3}",
+      "Mean Acc": 0.012525399129172715,
+      "Std Acc": 0.01042142541053785,
+      "Mean Macro-F1": 0.00879426783517288
+    }
+  },
+  "XGBoost": {
+    "params": {
+      "n_estimators": 200,
+      "max_depth": 3,
+      "learning_rate": 0.05
+    },
+    "cv_result": {
+      "Model": "XGBoost",
+      "Params": "{\"n_estimators\": 200, \"max_depth\": 3, \"learning_rate\": 0.05}",
+      "Mean Acc": 0.018294629898403483,
+      "Std Acc": 0.01572810874165174,
+      "Mean Macro-F1": 0.011668502435880922
+    }
+  },
+  "SVM (RBF)": {
+    "params": {
+      "C": 50,
+      "gamma": "scale"
+    },
+    "cv_result": {
+      "Model": "SVM (RBF)",
+      "Params": "{\"C\": 50, \"gamma\": \"scale\"}",
+      "Mean Acc": 0.022496371552975326,
+      "Std Acc": 0.008584417968522473,
+      "Mean Macro-F1": 0.01689471959485893
+    }
+  }
+}

@@ -1,0 +1,16 @@
+DATA COVERAGE REPORT
+========================================
+Total grid points: 37
+Grid points backed by only 1 session: 12 (32%)
+Grid points backed by 2+ sessions: 25
+
+By location:
+                        grid_points  min_sessions  max_sessions  mean_sessions
+place                                                                         
+Scotiabank road data              6             1             1            1.0
+Smythe park data                 25            10            10           10.0
+Toronto city hall data            6             1             1            1.0
+
+Every single-session grid point is a class the model can never be tested on for cross-session generalization: whichever fold holds that one recording out has zero training examples of that class, and zero other sessions exist to check whether the sensor's fingerprint for that point holds up on a different day, height, orientation, or placement.
+
+Recommendation: collect at least 2-3 additional independent recording sessions per grid point, holding sensor height, orientation, and physical placement consistent across sessions. This directly targets the model's actual bottleneck - it is not a hyperparameter problem. A modest accuracy drop from adding this unseen-session data is expected and is the correct outcome: it means the reported number is finally measuring generalization rather than session-specific memorization.
