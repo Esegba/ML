@@ -1,5 +1,13 @@
 DATA COVERAGE REPORT
-========================================
+============================================================
+
+What "coverage" means in this report (checked three ways):
+  1. Session/group coverage - independent recording sessions per grid point
+  2. Missing-value coverage - NaNs in the engineered feature columns
+  3. Window/time coverage - windows extracted per source file
+
+1. SESSION/GROUP COVERAGE
+------------------------------------------------------------
 Total grid points: 37
 Grid points backed by only 1 session: 12 (32%)
 Grid points backed by 2+ sessions: 25
@@ -13,4 +21,25 @@ Toronto city hall data            6             1             1            1.0
 
 Every single-session grid point is a class the model can never be tested on for cross-session generalization: whichever fold holds that one recording out has zero training examples of that class, and zero other sessions exist to check whether the sensor's fingerprint for that point holds up on a different day, height, orientation, or placement.
 
-Recommendation: collect at least 2-3 additional independent recording sessions per grid point, holding sensor height, orientation, and physical placement consistent across sessions. This directly targets the model's actual bottleneck - it is not a hyperparameter problem. A modest accuracy drop from adding this unseen-session data is expected and is the correct outcome: it means the reported number is finally measuring generalization rather than session-specific memorization.
+2. MISSING-VALUE COVERAGE
+------------------------------------------------------------
+Feature columns checked: 43
+No missing values found in any engineered feature column.
+
+3. WINDOW/TIME COVERAGE
+------------------------------------------------------------
+Window size: 100 rows, step: 100 rows (non-overlapping)
+Source files: 262
+Windows per file - min: 10, max: 10, mean: 10.0
+No files were short enough to produce only a single window.
+
+SIGNIFICANT GAPS/ISSUES FOUND
+------------------------------------------------------------
+- 12 grid points (32%) have only one recording session - the dominant limitation in this dataset.
+
+HOW THIS AFFECTS MODELING STRATEGY AND PREPROCESSING
+------------------------------------------------------------
+- Session/group coverage is why every evaluation in this pipeline uses StratifiedGroupKFold grouped by source file rather than a plain random or stratified split: a random split would let windows from the same session leak into both train and test, inflating accuracy (this is exactly what happened before the pipeline was corrected - see the earlier random-split 'sanity check' numbers, which score far higher than the grouped, honest ones).
+- Single-session classes cannot be meaningfully cross-validated for generalization - the honest grouped-CV accuracy on this dataset is expected to look poor for that reason, and no preprocessing or hyperparameter choice (see 08_tune_hyperparameters.py) fixes it.
+- Missing-value coverage is handled at the preprocessing stage with median imputation inside each model's pipeline (see config.py-driven scripts 02/03/05/08); this is adequate given the low missing-value rate found above, but should be re-checked if new data sources are added.
+- Recommendation: collect at least 2-3 additional independent recording sessions per grid point, holding sensor height, orientation, and physical placement consistent across sessions. This directly targets the model's actual bottleneck - it is not a hyperparameter or preprocessing problem. A modest accuracy drop from adding this unseen-session data is expected and is the correct outcome: it means the reported number is finally measuring generalization rather than session-specific memorization.

@@ -1,0 +1,4 @@
+Model,Baseline Params,Baseline Acc,Baseline Macro-F1,Tuned Params,Tuned Acc,Tuned Macro-F1,Macro-F1 Change
+Random Forest,"{""n_estimators"": 300, ""max_depth"": null, ""min_samples_leaf"": 1}",0.013251088534107402,0.008896584094025694,"{""n_estimators"": 200, ""max_depth"": null, ""min_samples_leaf"": 3}",0.012525399129172715,0.00879426783517288,-0.00010231625885281405
+XGBoost,"{""n_estimators"": 300, ""max_depth"": 6, ""learning_rate"": 0.3}",0.008795355587808418,0.006386093513031187,"{""n_estimators"": 200, ""max_depth"": 3, ""learning_rate"": 0.05}",0.018294629898403483,0.011668502435880922,0.005282408922849736
+SVM (RBF),"{""C"": 10, ""gamma"": ""scale""}",0.009201741654571844,0.006785375786689196,"{""C"": 50, ""gamma"": ""scale""}",0.022496371552975326,0.01689471959485893,0.010109343808169732

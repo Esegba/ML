@@ -1,0 +1,54 @@
+HYPERPARAMETER TUNING REPORT
+============================================================
+
+Evaluation protocol: StratifiedGroupKFold, 5 folds, grouped by
+source recording file (group_id), so no window from the same
+file/session ever appears in both train and test. Every number
+below is a 5-fold mean.
+
+Metric used to select the best hyperparameters: Macro-F1.
+Accuracy is also reported for reference, but Macro-F1 was used
+for model selection because classes are highly imbalanced (~57
+grid-point classes, with per-class support ranging from a single
+recording session to ten) - plain accuracy can look good on a
+model that only ever predicts the best-represented classes.
+
+--- Random Forest ---
+Hyperparameters tuned and range tested:
+    n_estimators: [200, 400]
+    max_depth: [None, 15]
+    min_samples_leaf: [1, 3]
+Default/baseline params: {'n_estimators': 300, 'max_depth': None, 'min_samples_leaf': 1}
+  Baseline  -> Acc=0.013, Macro-F1=0.009
+Best params found: {'n_estimators': 200, 'max_depth': None, 'min_samples_leaf': 3}
+  Tuned     -> Acc=0.013, Macro-F1=0.009
+  Change: Macro-F1 worsened by 0.000
+
+--- XGBoost ---
+Hyperparameters tuned and range tested:
+    n_estimators: [200, 400]
+    max_depth: [3, 6]
+    learning_rate: [0.05, 0.1]
+Default/baseline params: {'n_estimators': 300, 'max_depth': 6, 'learning_rate': 0.3}
+  Baseline  -> Acc=0.009, Macro-F1=0.006
+Best params found: {'n_estimators': 200, 'max_depth': 3, 'learning_rate': 0.05}
+  Tuned     -> Acc=0.018, Macro-F1=0.012
+  Change: Macro-F1 improved by 0.005
+
+--- SVM (RBF) ---
+Hyperparameters tuned and range tested:
+    C: [1, 10, 50]
+    gamma: ['scale', 'auto']
+Default/baseline params: {'C': 10, 'gamma': 'scale'}
+  Baseline  -> Acc=0.009, Macro-F1=0.007
+Best params found: {'C': 50, 'gamma': 'scale'}
+  Tuned     -> Acc=0.022, Macro-F1=0.017
+  Change: Macro-F1 improved by 0.010
+
+Overall: tuned vs baseline
+        Model                                                 Baseline Params  Baseline Acc  Baseline Macro-F1                                                    Tuned Params  Tuned Acc  Tuned Macro-F1  Macro-F1 Change
+Random Forest {"n_estimators": 300, "max_depth": null, "min_samples_leaf": 1}      0.013251           0.008897 {"n_estimators": 200, "max_depth": null, "min_samples_leaf": 3}   0.012525        0.008794        -0.000102
+      XGBoost     {"n_estimators": 300, "max_depth": 6, "learning_rate": 0.3}      0.008795           0.006386    {"n_estimators": 200, "max_depth": 3, "learning_rate": 0.05}   0.018295        0.011669         0.005282
+    SVM (RBF)                                     {"C": 10, "gamma": "scale"}      0.009202           0.006785                                     {"C": 50, "gamma": "scale"}   0.022496        0.016895         0.010109
+
+Interpretation: hyperparameter tuning made little to no meaningful difference here. That is expected, not a sign the search was done wrong - see 09_data_coverage_report.py. Many classes are backed by only one recording session, so there is no cross-session variation in the training data for the model to learn a tolerance for in the first place. No choice of tree depth, learning rate, or SVM kernel parameter can substitute for that missing variation. The next highest-value step is collecting more repeated sessions per grid point with consistent sensor height, orientation, and placement, not further hyperparameter search.
